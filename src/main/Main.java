@@ -5,13 +5,18 @@ import rbm.SimpleLayeredRBM;
 import java.io.ObjectOutputStream;
 import java.io.FileOutputStream;
 import java.io.File;
+import java.util.Random;
 
 public class Main {
+
+    public static Random Random;
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
+        Random = new Random(27015); // random fixed seed for testing reproducibility
+
 		if(args.length != 5){
 			System.out.println("Usage:\n\tTraining set name\n\tTest set name\n\tLayer File Name\n\tPrediction output name\n\tserialized file name");
 			System.exit(0);

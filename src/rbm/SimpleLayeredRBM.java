@@ -1,6 +1,7 @@
 package rbm;
 
-import java.util.Random;
+import main.Main;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.File;
@@ -12,7 +13,6 @@ public class SimpleLayeredRBM implements Serializable {
 	
 	//member variables
     protected SimpleRBM[] layers;
-    protected transient Random rand = new Random();
     
     /**
      *
@@ -83,7 +83,7 @@ public class SimpleLayeredRBM implements Serializable {
 	    		seed = new boolean[datapoint.length + 1];
 	    		
 	    		// start with a random prediction, fill in the with our observation
-	    		seed[0] = this.rand.nextDouble() < 0.5;
+	    		seed[0] = Main.Random.nextDouble() < 0.5;
 	    		System.arraycopy(datapoint, 0, seed, 1, datapoint.length);
 	    		
 	    		layeredGenerate(seed, numCycles);	    		

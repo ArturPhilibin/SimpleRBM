@@ -1,6 +1,7 @@
 package rbm;
 
-import java.util.Random;
+import main.Main;
+
 import java.io.Serializable;
 
 public class InputRBM extends SimpleRBM implements Serializable{
@@ -8,7 +9,6 @@ public class InputRBM extends SimpleRBM implements Serializable{
 	private static final long serialVersionUID = 5035486678274163394L;
 	
 	Node[] visibleNodes;
-    transient Random rand = new Random();
 
     /*
       * Constructor for InputRBM
@@ -118,7 +118,7 @@ public class InputRBM extends SimpleRBM implements Serializable{
 
                 //(call logsig function with annealing rate set to 1)
                 // activate with that probability
-               visibleNodes[i].setValue((this.rand.nextDouble() < logsig(sum, 1)));
+               visibleNodes[i].setValue((Main.Random.nextDouble() < logsig(sum, 1)));
        
 
             }
@@ -141,7 +141,7 @@ public class InputRBM extends SimpleRBM implements Serializable{
                     sum += weights[j][i];
 
             //Probabilistically activate node based on sigmoid computation
-            hiddenNodes[i] = (rand.nextDouble() < logsig(sum, annealingRate));
+            hiddenNodes[i] = (Main.Random.nextDouble() < logsig(sum, annealingRate));
 
         }
     }

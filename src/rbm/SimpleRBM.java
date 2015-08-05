@@ -1,6 +1,7 @@
 package rbm;
 
-import java.util.Random;
+import main.Main;
+
 import java.io.Serializable;
 
 public class SimpleRBM implements Serializable {
@@ -17,8 +18,6 @@ public class SimpleRBM implements Serializable {
 	protected float[][] dPos;    // accumulates positive weight changes
 	protected float[][] dNeg;    // accumulates negative weight changes
 	protected float annealingRate; // multiplier in sigmoid function
-    
-    protected transient Random rand = new Random();
     
     /*
      *  Method: constructor
@@ -39,7 +38,7 @@ public class SimpleRBM implements Serializable {
          //randomly initialize weights
         for (int i = 0; i < numVisibleNodes + 1; ++i) {
             for (int j = 0; j < numHiddenNodes + 1; ++j) {
-                weights[i][j] = new Float(0.1 * rand.nextGaussian());
+                weights[i][j] = new Float(0.1 * Main.Random.nextGaussian());
                 dPos[i][j] = 0;
                 dNeg[i][j] = 0;
             }
@@ -65,7 +64,7 @@ public class SimpleRBM implements Serializable {
          //randomly initialize weights
         for (int i = 0; i < visibleNodes.length; ++i) {
             for (int j = 0; j < numHiddenNodes + 1; ++j) {
-                weights[i][j] = new Float(0.1 * rand.nextGaussian());
+                weights[i][j] = new Float(0.1 * Main.Random.nextGaussian());
                 dPos[i][j] = 0;
                 dNeg[i][j] = 0;
             }
@@ -135,7 +134,7 @@ public class SimpleRBM implements Serializable {
             //compute weighted sum
             float sum = computeVisibleWeightedSum(i);
             // Probabilistically activate node based on sigmoid computation
-            visibleNodes[i] = (rand.nextDouble() < logsig(sum, 1));
+            visibleNodes[i] = (Main.Random.nextDouble() < logsig(sum, 1));
         }
     }
 
@@ -151,7 +150,7 @@ public class SimpleRBM implements Serializable {
             }
 
             // Probabilistically activate node based on sigmoid computation
-            hiddenNodes[i] = (rand.nextDouble() < logsig(sum, annealingRate));
+            hiddenNodes[i] = (Main.Random.nextDouble() < logsig(sum, annealingRate));
         }
     } // end of method activate hidden
 
