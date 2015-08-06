@@ -14,10 +14,12 @@ public class Main {
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args)
+    {
         Random = new Random(27015); // random fixed seed for testing reproducibility
 
-		if(args.length != 5){
+		if(args.length != 5)
+        {
 			System.out.println("Usage:\n\tTraining set name\n\tTest set name\n\tLayer File Name\n\tPrediction output name\n\tserialized file name");
 			System.exit(0);
 		}
@@ -33,15 +35,20 @@ public class Main {
 		
 		boolean[][] trainingData = trainParse.getData();
 		int sizes[] = trainParse.getSizes(layerFileName);
+
 		SimpleLayeredRBM slrbm = new SimpleLayeredRBM(trainingData[0].length, sizes);
 		
 		slrbm.train(trainingData, 100);
 		System.out.println("Done training!  Now to serialize the file:" + serialName);
-		try{
+
+        try
+        {
 			ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(new File(serialName)));
 			out.writeObject(slrbm);
 			out.close();
-		}catch(Exception e){
+		}
+        catch(Exception e)
+        {
 			e.printStackTrace();
 		}
 
@@ -56,6 +63,5 @@ public class Main {
 		
 		System.out.println("Done!  I hope you win!");
 		
-	} // end of main method
-
-} // end of class main
+	}
+}

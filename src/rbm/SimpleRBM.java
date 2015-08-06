@@ -4,12 +4,8 @@ import main.Main;
 
 import java.io.Serializable;
 
-public class SimpleRBM implements Serializable {
-	  //member variables
-
-    /**
-	 * 
-	 */
+public class SimpleRBM implements Serializable
+{
 	private static final long serialVersionUID = -4412383722010406930L;
 	
 	protected boolean[] visibleNodes;
@@ -24,10 +20,12 @@ public class SimpleRBM implements Serializable {
      *
      *  constructs a new RBM
      */
-    public SimpleRBM(int numVisibleNodes, int numHiddenNodes) {
+    public SimpleRBM(int numVisibleNodes, int numHiddenNodes)
+    {
         //initialize nodes
         this.visibleNodes = new boolean[numVisibleNodes + 1]; //add one spot for bias
         this.hiddenNodes = new boolean[numHiddenNodes + 1];
+
         visibleNodes[visibleNodes.length - 1] = true; //bias is always on
         hiddenNodes[hiddenNodes.length - 1] = true;
 
@@ -35,9 +33,12 @@ public class SimpleRBM implements Serializable {
         this.weights = new float[numVisibleNodes + 1][numHiddenNodes + 1];
         this.dPos = new float[numVisibleNodes + 1][numHiddenNodes + 1];
         this.dNeg = new float[numVisibleNodes + 1][numHiddenNodes + 1];
+
          //randomly initialize weights
-        for (int i = 0; i < numVisibleNodes + 1; ++i) {
-            for (int j = 0; j < numHiddenNodes + 1; ++j) {
+        for (int i = 0; i < numVisibleNodes + 1; ++i)
+        {
+            for (int j = 0; j < numHiddenNodes + 1; ++j)
+            {
                 weights[i][j] = new Float(0.1 * Main.Random.nextGaussian());
                 dPos[i][j] = 0;
                 dNeg[i][j] = 0;
@@ -51,7 +52,8 @@ public class SimpleRBM implements Serializable {
      * constructs a new SimpleRBM using a pre-defined set of input nodes.
      * useful when layering RBMs.
      */
-    public SimpleRBM(boolean[] visibleNodes, int numHiddenNodes) {
+    public SimpleRBM(boolean[] visibleNodes, int numHiddenNodes)
+    {
         this.visibleNodes = visibleNodes;
 
         this.hiddenNodes = new boolean[numHiddenNodes + 1];
@@ -61,9 +63,12 @@ public class SimpleRBM implements Serializable {
         this.weights = new float[visibleNodes.length][numHiddenNodes + 1];
         this.dPos = new float[visibleNodes.length][numHiddenNodes + 1];
         this.dNeg = new float[visibleNodes.length][numHiddenNodes + 1];
+
          //randomly initialize weights
-        for (int i = 0; i < visibleNodes.length; ++i) {
-            for (int j = 0; j < numHiddenNodes + 1; ++j) {
+        for (int i = 0; i < visibleNodes.length; ++i)
+        {
+            for (int j = 0; j < numHiddenNodes + 1; ++j)
+            {
                 weights[i][j] = new Float(0.1 * Main.Random.nextGaussian());
                 dPos[i][j] = 0;
                 dNeg[i][j] = 0;
@@ -73,17 +78,6 @@ public class SimpleRBM implements Serializable {
 
     public boolean[] getVisible() {
         return visibleNodes;
-    }
-
-    /*
-     * Method: setInput
-     *
-     * To be called only in LayeredRBM for first layer
-     */
-    public void setInput(boolean[] newInput) {
-        for (int i = 0; i < visibleNodes.length - 1 && i < newInput.length; i++) {
-            visibleNodes[i] = newInput[i];
-        }
     }
 
     public boolean[] getHidden() {
@@ -109,13 +103,17 @@ public class SimpleRBM implements Serializable {
      *  been set) and adds initial and final contrastive divergences to accumulators
      *
      */
-    public void train(int numCycles) {
+    public void train(int numCycles)
+    {
         activateHidden();
         accumulatePos();
-        for (int i = 0; i < numCycles; ++i) {
+
+        for (int i = 0; i < numCycles; ++i)
+        {
             activateVisible();
             activateHidden();
         }
+
         accumulateNeg();
     }
 
@@ -125,44 +123,49 @@ public class SimpleRBM implements Serializable {
      *  Chooses whether to activate each input/hidden node based on the
      *  activation states and weights of the other nodes
      */
-    public void activateVisible() {
-
-        //initialize random number generator
-        
-
-        for (int i = 0; i < visibleNodes.length - 1; ++i) {
+    public void activateVisible()
+    {
+        for (int i = 0; i < visibleNodes.length - 1; ++i)
+        {
             //compute weighted sum
             float sum = computeVisibleWeightedSum(i);
             // Probabilistically activate node based on sigmoid computation
-            visibleNodes[i] = (Main.Random.nextDouble() < logsig(sum, 1));
+            visibleNodes[i] = (Main.Random.nextDouble() < logSigmoid(sum, 1));
         }
     }
 
-    public void activateHidden() {
-        
-        for (int i = 0; i < hiddenNodes.length - 1; ++i) {
+    public void activateHidden()
+    {
+        for (int i = 0; i < hiddenNodes.length - 1; ++i)
+        {
             //compute weighted sum
             float sum = 0;
-            for (int j = 0; j < visibleNodes.length; ++j) {
-                if (visibleNodes[j]) {
+
+            for (int j = 0; j < visibleNodes.length; ++j)
+            {
+                if (visibleNodes[j])
+                {
                     sum += weights[j][i];
                 }
             }
 
             // Probabilistically activate node based on sigmoid computation
-            hiddenNodes[i] = (Main.Random.nextDouble() < logsig(sum, annealingRate));
+            hiddenNodes[i] = (Main.Random.nextDouble() < logSigmoid(sum, annealingRate));
         }
-    } // end of method activate hidden
-
+    }
     
     //Computes the weighted sum for a visible node
-    public float computeVisibleWeightedSum(int index) {
+    public float computeVisibleWeightedSum(int index)
+    {
         float sum = 0;
-        for (int j = 0; j < hiddenNodes.length; j++) {
-            if (hiddenNodes[j]) {
+        for (int j = 0; j < hiddenNodes.length; j++)
+        {
+            if (hiddenNodes[j])
+            {
                 sum += weights[index][j];
             }
         }
+
         return sum;
     }
 
@@ -173,26 +176,33 @@ public class SimpleRBM implements Serializable {
      * node states and hidden node states
      *
      */
-    protected void accumulatePos() {
-        for (int i = 0; i < visibleNodes.length; ++i) {
-            if (visibleNodes[i]) {
-                for (int j = 0; j < hiddenNodes.length; ++j) {
+    protected void accumulatePos()
+    {
+        for (int i = 0; i < visibleNodes.length; ++i)
+        {
+            if (visibleNodes[i])
+            {
+                for (int j = 0; j < hiddenNodes.length; ++j)
+                {
                     dPos[i][j] += hiddenNodes[j] ? 1: 0;
                 }
             }
         }
     }
 
-    protected void accumulateNeg() {
-        for (int i = 0; i < visibleNodes.length; ++i) {
-            if (visibleNodes[i]) {
-                for (int j = 0; j < hiddenNodes.length; ++j) {
+    protected void accumulateNeg()
+    {
+        for (int i = 0; i < visibleNodes.length; ++i)
+        {
+            if (visibleNodes[i])
+            {
+                for (int j = 0; j < hiddenNodes.length; ++j)
+                {
                     dNeg[i][j] += hiddenNodes[j] ? 1 : 0;
                 }
             }
         }
     }
-
 
     /*
      * Method: updateWeights
@@ -202,9 +212,12 @@ public class SimpleRBM implements Serializable {
      * resets weight change matrices.
      *
      */
-    public void updateWeights(int numInputs) {
-        for (int i = 0; i < weights.length; ++i) {
-            for (int j = 0; j < weights[0].length; ++j) {
+    public void updateWeights(int numInputs)
+    {
+        for (int i = 0; i < weights.length; ++i)
+        {
+            for (int j = 0; j < weights[0].length; ++j)
+            {
                 weights[i][j] += (0.2f * dPos[i][j] / numInputs);
                 weights[i][j] -= (0.2f * dNeg[i][j] / numInputs);
 
@@ -221,31 +234,35 @@ public class SimpleRBM implements Serializable {
      * all weights between active nodes
      *
      */
-    public float getEnergy() {
+    public float getEnergy()
+    {
         float energy = 0;
-        int vn;
-        int hn;
-        for (int i = 0; i < visibleNodes.length; ++i) {
-            for (int j = 0; j < hiddenNodes.length; ++j) {
-            	vn = visibleNodes[i] ? 1 : 0;
-            	hn = hiddenNodes[j] ? 1 : 0;      			
+
+        for (int i = 0; i < visibleNodes.length; ++i)
+        {
+            for (int j = 0; j < hiddenNodes.length; ++j)
+            {
+            	int vn = visibleNodes[i] ? 1 : 0;
+            	int hn = hiddenNodes[j] ? 1 : 0;
                 energy -= vn * hn * weights[i][j];
             }
         }
+
         return energy;
     }
 
     /*
-     * Method: logsig
+     * Method: logSigmoid
      *
-     * computes the logsig of the input number
+     * computes the logSigmoid of the input number
      *
-     * logsig is a sigmoidal function with range between 0 and 1
+     * logSigmoid is a sigmoidal function with range between 0 and 1
      *
      * input is adjusted by annealing rate, which should be between 0 and 1
      *
      */
-    protected static float logsig(float x, float annealingRate) {
-        return 1 / (1 + ((float) Math.exp(-x / annealingRate)));
+    protected static float logSigmoid(float x, float annealingRate)
+    {
+        return (float)(1 / (1 + Math.exp(-x / annealingRate)));
     }
 }
